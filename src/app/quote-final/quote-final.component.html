@@ -1,0 +1,492 @@
+<!-- quote-final.component.html -->
+<div class="quote-final-container">
+    <!-- Loading spinner -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  
+    <!-- Quote List View -->
+    <div *ngIf="viewMode === 'list'" class="quote-list-section">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Insurance Quotes</h2>
+        <button class="btn btn-primary" (click)="createNewQuote()">
+          <i class="bi bi-plus-circle me-2"></i>New Quote
+        </button>
+      </div>
+  
+      <!-- Filters and sorting -->
+      <div class="filters-row mb-3">
+        <div class="input-group">
+          <span class="input-group-text">Status</span>
+          <select class="form-select" [(ngModel)]="statusFilter" (change)="changeStatusFilter(statusFilter)">
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="revised">Revised</option>
+            <option value="bound">Bound</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        
+        <div class="sort-buttons">
+          <span>Sort by:</span>
+          <button class="btn btn-outline-secondary" [class.active]="sortField === 'createdDate'"
+                  (click)="changeSorting('createdDate')">
+            Date
+            <i *ngIf="sortField === 'createdDate'" 
+               [class]="sortOrder === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+          </button>
+          <button class="btn btn-outline-secondary" [class.active]="sortField === 'premium'"
+                  (click)="changeSorting('premium')">
+            Premium
+            <i *ngIf="sortField === 'premium'" 
+               [class]="sortOrder === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+          </button>
+        </div>
+      </div>
+  
+      <!-- Quote list table -->
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Quote #</th>
+              <th>Created Date</th>
+              <th>Provider</th>
+              <th>Coverage</th>
+              <th>Premium</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let quote of filteredQuoteList">
+              <td>{{ quote.id }}</td>
+              <td>{{ quote.createdDate | date:'MMM d, y' }}</td>
+              <td>{{ quote.provider?.name }}</td>
+              <td>{{ quote.businessDetails?.coverageAmount | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td>{{ quote.calculatedPremium | currency:'INR':'symbol':'1.0-0' }}/month</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'bg-warning': quote.status === 'pending',
+                  'bg-info': quote.status === 'revised',
+                  'bg-success': quote.status === 'bound',
+                  'bg-danger': quote.status === 'rejected'
+                }">{{ quote.status | titlecase }}</span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-outline-primary" (click)="reviseQuote(quote)" 
+                          *ngIf="quote.status !== 'bound'">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-success" (click)="bindQuote(quote)"
+                          *ngIf="quote.status !== 'bound'">
+                    <i class="bi bi-link"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-secondary" [routerLink]="['/quotes', quote.id]">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="deleteQuote(quote.id)"
+                          *ngIf="quote.status !== 'bound'">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="filteredQuoteList.length === 0">
+              <td colspan="7" class="text-center py-4">
+                No quotes found. Create a new quote to get started.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <!-- Pagination -->
+      <nav *ngIf="totalItems > itemsPerPage">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="changePage(currentPage - 1)">Previous</a>
+          </li>
+          <li class="page-item" *ngFor="let page of [].constructor(Math.ceil(totalItems / itemsPerPage)); let i = index"
+              [class.active]="currentPage === i + 1">
+            <a class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === Math.ceil(totalItems / itemsPerPage)">
+            <a class="page-link" (click)="changePage(currentPage + 1)">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  
+    <!-- New Quote or Revise Quote Form -->
+    <div *ngIf="viewMode === 'new' || viewMode === 'revise'" class="quote-form-section">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ viewMode === 'new' ? 'New Quote' : 'Revise Quote' }}</h2>
+        <button class="btn btn-outline-secondary" (click)="cancelAction()">Cancel</button>
+      </div>
+  
+      <form [formGroup]="quoteForm" (ngSubmit)="viewMode === 'new' ? submitQuote() : submitRevision()">
+        <!-- Stepper navigation -->
+        <ul class="nav nav-tabs mb-4">
+          <li class="nav-item">
+            <a class="nav-link active" id="personal-tab" data-bs-toggle="tab" href="#personal">Personal Details</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="business-tab" data-bs-toggle="tab" href="#business">Coverage Details</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="additional-tab" data-bs-toggle="tab" href="#additional">Additional Info</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="provider-tab" data-bs-toggle="tab" href="#provider">Select Provider</a>
+          </li>
+        </ul>
+  
+        <div class="tab-content">
+          <!-- Personal Details Tab -->
+          <div class="tab-pane fade show active" id="personal" formGroupName="personalDetails">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="firstName" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="firstName" formControlName="firstName">
+                <div class="invalid-feedback" 
+                     *ngIf="quoteForm.get('personalDetails.firstName')?.invalid && 
+                           quoteForm.get('personalDetails.firstName')?.touched">
+                  First name is required
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="lastName" formControlName="lastName">
+                <div class="invalid-feedback" 
+                     *ngIf="quoteForm.get('personalDetails.lastName')?.invalid && 
+                           quoteForm.get('personalDetails.lastName')?.touched">
+                  Last name is required
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" formControlName="email">
+                <div class="invalid-feedback" 
+                     *ngIf="quoteForm.get('personalDetails.email')?.invalid && 
+                           quoteForm.get('personalDetails.email')?.touched">
+                  Please provide a valid email address
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="tel" class="form-control" id="phone" formControlName="phone">
+                <div class="invalid-feedback" 
+                     *ngIf="quoteForm.get('personalDetails.phone')?.invalid && 
+                           quoteForm.get('personalDetails.phone')?.touched">
+                  Please provide a valid 10-digit phone number
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label for="dob" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" id="dob" formControlName="dob">
+                <div class="invalid-feedback" 
+                     *ngIf="quoteForm.get('personalDetails.dob')?.invalid && 
+                           quoteForm.get('personalDetails.dob')?.touched">
+                  Date of birth is required
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label for="gender" class="form-label">Gender</label>
+                <select class="form-select" id="gender" formControlName="gender">
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+                <div class="invalid-feedback" 
+                     *ngIf="quoteForm.get('personalDetails.gender')?.invalid && 
+                           quoteForm.get('personalDetails.gender')?.touched">
+                  Please select a gender
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-check mt-4">
+                  <input class="form-check-input" type="checkbox" id="smoker" formControlName="smoker">
+                  <label class="form-check-label" for="smoker">
+                    Smoker
+                  </label>
+                </div>
+              </div>
+            </div>
+  
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" class="btn btn-primary" 
+                      onclick="document.getElementById('business-tab').click()">
+                Next
+              </button>
+            </div>
+          </div>
+  
+          <!-- Coverage Details Tab -->
+          <div class="tab-pane fade" id="business" formGroupName="businessDetails">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="coverageType" class="form-label">Coverage Type</label>
+                <select class="form-select" id="coverageType" formControlName="coverageType">
+                  <option value="term">Term Life Insurance</option>
+                  <option value="whole">Whole Life Insurance</option>
+                  <option value="endowment">Endowment Plan</option>
+                  <option value="ulip">ULIP</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="coverageAmount" class="form-label">Coverage Amount</label>
+                <select class="form-select" id="coverageAmount" formControlName="coverageAmount">
+                  <option value="500000">₹ 5 Lakh</option>
+                  <option value="1000000">₹ 10 Lakh</option>
+                  <option value="2500000">₹ 25 Lakh</option>
+                  <option value="5000000">₹ 50 Lakh</option>
+                  <option value="10000000">₹ 1 Crore</option>
+                  <option value="20000000">₹ 2 Crore</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="coverageTerm" class="form-label">Coverage Term (Years)</label>
+                <select class="form-select" id="coverageTerm" formControlName="coverageTerm">
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                  <option value="25">25</option>
+                  <option value="30">30</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="occupation" class="form-label">Occupation</label>
+                <input type="text" class="form-control" id="occupation" formControlName="occupation">
+                <div class="invalid-feedback" 
+                     *ngIf="quoteForm.get('businessDetails.occupation')?.invalid && 
+                           quoteForm.get('businessDetails.occupation')?.touched">
+                  Occupation is required
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="annualIncome" class="form-label">Annual Income</label>
+                <input type="number" class="form-control" id="annualIncome" formControlName="annualIncome">
+                <div class="invalid-feedback" 
+                     *ngIf="quoteForm.get('businessDetails.annualIncome')?.invalid && 
+                           quoteForm.get('businessDetails.annualIncome')?.touched">
+                  Annual income must be at least ₹1,00,000
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check mt-4">
+                  <input class="form-check-input" type="checkbox" id="existingMedicalConditions" 
+                         formControlName="existingMedicalConditions">
+                  <label class="form-check-label" for="existingMedicalConditions">
+                    Existing Medical Conditions
+                  </label>
+                </div>
+              </div>
+            </div>
+  
+            <div class="d-flex justify-content-between mt-4">
+              <button type="button" class="btn btn-outline-secondary" 
+                      onclick="document.getElementById('personal-tab').click()">
+                Previous
+              </button>
+              <button type="button" class="btn btn-primary" 
+                      onclick="document.getElementById('additional-tab').click()">
+                Next
+              </button>
+            </div>
+          </div>
+  
+          <!-- Additional Info Tab -->
+          <div class="tab-pane fade" id="additional" formGroupName="additionalInfo">
+            <div class="row g-3">
+              <div class="col-md-12">
+                <label for="familyHistory" class="form-label">Family Medical History</label>
+                <textarea class="form-control" id="familyHistory" formControlName="familyHistory" rows="3"
+                          placeholder="Please provide details of any family history of serious medical conditions"></textarea>
+              </div>
+              <div class="col-md-12">
+                <label for="hobbies" class="form-label">Hobbies & Activities</label>
+                <textarea class="form-control" id="hobbies" formControlName="hobbies" rows="3"
+                          placeholder="Please provide details of any hazardous hobbies or activities"></textarea>
+              </div>
+              <div class="col-md-12">
+                <label for="travelPlans" class="form-label">Travel Plans</label>
+                <textarea class="form-control" id="travelPlans" formControlName="travelPlans" rows="3"
+                          placeholder="Please provide details of any planned travel to high-risk countries"></textarea>
+              </div>
+            </div>
+  
+            <div class="d-flex justify-content-between mt-4">
+              <button type="button" class="btn btn-outline-secondary" 
+                      onclick="document.getElementById('business-tab').click()">
+                Previous
+              </button>
+              <button type="button" class="btn btn-primary" 
+                      onclick="document.getElementById('provider-tab').click()">
+                Next
+              </button>
+            </div>
+          </div>
+  
+          <!-- Provider Selection Tab -->
+          <div class="tab-pane fade" id="provider">
+            <div class="mb-4">
+              <h3>Available Plans</h3>
+              <p>Based on your information, here are the recommended insurance plans:</p>
+            </div>
+  
+            <div class="provider-cards">
+              <div *ngFor="let provider of providers" class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <div class="provider-logo">
+                    <img [src]="'assets/images/' + provider.name.toLowerCase().replace(' ', '-') + '.png'" 
+                         [alt]="provider.name" class="img-fluid" style="max-height: 40px;">
+                  </div>
+                  <div class="provider-name">{{ provider.planName }}</div>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="info-label">Life Cover</div>
+                      <div class="info-value">{{ provider.coverAmount }}</div>
+                      <div class="info-label">Max Limit</div>
+                    <div class="info-value">{{ provider.maxLimit }}</div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="info-label">Claim Settlement</div>
+                    <div class="info-value">{{ provider.claimSettlement }}</div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="info-label">Price</div>
+                    <div class="info-value price-value">{{ provider.price }}</div>
+                    <div *ngIf="provider.discount" class="discount-badge">
+                      Save {{ provider.discount }}
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="benefits-section mt-3">
+                  <ul class="benefits-list">
+                    <li *ngFor="let benefit of provider.benefits" class="benefit-item">
+                      <i class="bi bi-check text-success me-2"></i> {{ benefit }}
+                    </li>
+                  </ul>
+                </div>
+                
+                <div class="price-timer mt-3" *ngIf="provider.id <= 2">
+                  <i class="bi bi-alarm"></i> Price increasing in 19h :53m :28s
+                </div>
+              </div>
+              <div class="card-footer d-flex justify-content-between align-items-center">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" [id]="'provider-' + provider.id" 
+                         formControlName="selectedProvider" [value]="provider.id">
+                  <label class="form-check-label" [for]="'provider-' + provider.id">
+                    Select Plan
+                  </label>
+                </div>
+                <button type="button" class="btn btn-outline-primary">View Plan</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-outline-secondary" 
+                    onclick="document.getElementById('additional-tab').click()">
+              Previous
+            </button>
+            <button type="submit" class="btn btn-success" [disabled]="!quoteForm.valid">
+              {{ viewMode === 'new' ? 'Submit Quote' : 'Submit Revision' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Bind Quote View -->
+  <div *ngIf="viewMode === 'bind'" class="bind-quote-section">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Bind Quote</h2>
+      <button class="btn btn-outline-secondary" (click)="cancelAction()">Cancel</button>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">Quote Summary</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h6>Personal Details</h6>
+            <dl class="row mb-0">
+              <dt class="col-sm-4">Name</dt>
+              <dd class="col-sm-8">{{ selectedQuote?.personalDetails?.firstName }} {{ selectedQuote?.personalDetails?.lastName }}</dd>
+              
+              <dt class="col-sm-4">Email</dt>
+              <dd class="col-sm-8">{{ selectedQuote?.personalDetails?.email }}</dd>
+              
+              <dt class="col-sm-4">Phone</dt>
+              <dd class="col-sm-8">{{ selectedQuote?.personalDetails?.phone }}</dd>
+              
+              <dt class="col-sm-4">Date of Birth</dt>
+              <dd class="col-sm-8">{{ selectedQuote?.personalDetails?.dob | date:'MMM d, y' }}</dd>
+            </dl>
+          </div>
+          <div class="col-md-6">
+            <h6>Coverage Details</h6>
+            <dl class="row mb-0">
+              <dt class="col-sm-4">Type</dt>
+              <dd class="col-sm-8">{{ selectedQuote?.businessDetails?.coverageType | titlecase }}</dd>
+              
+              <dt class="col-sm-4">Amount</dt>
+              <dd class="col-sm-8">{{ selectedQuote?.businessDetails?.coverageAmount | currency:'INR':'symbol':'1.0-0' }}</dd>
+              
+              <dt class="col-sm-4">Term</dt>
+              <dd class="col-sm-8">{{ selectedQuote?.businessDetails?.coverageTerm }} years</dd>
+              
+              <dt class="col-sm-4">Provider</dt>
+              <dd class="col-sm-8">{{ selectedQuote?.provider?.name }}</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer text-center">
+        <h5 class="mb-0">Monthly Premium: {{ selectedQuote?.calculatedPremium | currency:'INR':'symbol':'1.0-0' }}</h5>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">Binding Comments</h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <textarea class="form-control" rows="3" placeholder="Enter any comments or notes for binding this quote..." #bindComments></textarea>
+        </div>
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" id="termsCheck" #termsCheck>
+          <label class="form-check-label" for="termsCheck">
+            I confirm that all information provided is accurate and complete. I agree to the terms and conditions of the insurance policy.
+          </label>
+        </div>
+      </div>
+      <div class="card-footer d-flex justify-content-between">
+        <button class="btn btn-outline-secondary" (click)="cancelAction()">Cancel</button>
+        <button class="btn btn-success" [disabled]="!termsCheck.checked" (click)="submitBindRequest(bindComments.value)">
+          Submit Binding Request
+        </button>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <i class="bi bi-info-circle-fill me-2"></i>
+      <strong>Note:</strong> Once submitted for binding, this quote cannot be revised. The quote status will be updated to "Bound" and no further actions will be available.
+    </div>
+  </div>
+</div>

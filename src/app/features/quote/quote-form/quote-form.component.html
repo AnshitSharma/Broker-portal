@@ -1,0 +1,47 @@
+<div class="container mt-4">
+    <h2>Submit a New Quote</h2>
+    <form [formGroup]="quoteForm" (ngSubmit)="submitQuote()">
+      <div class="mb-3">
+        <label class="form-label">Business Name</label>
+        <input type="text" class="form-control" formControlName="businessName">
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Business Type</label>
+        <select class="form-control" formControlName="businessType">
+          <option value="LLC">LLC</option>
+          <option value="Corporation">Corporation</option>
+          <option value="Sole Proprietor">Sole Proprietor</option>
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Annual Revenue</label>
+        <input type="number" class="form-control" formControlName="annualRevenue">
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Number of Employees</label>
+        <input type="number" class="form-control" formControlName="employees">
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Coverage Limit</label>
+        <select class="form-control" formControlName="coverageLimit">
+          <option value="1000000">$1,000,000</option>
+          <option value="2000000">$2,000,000</option>
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Claims History</label>
+        <select class="form-control" formControlName="claimsHistory">
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="!quoteForm.valid">Submit Quote</button>
+    </form>
+  </div>
+  

@@ -1,0 +1,138 @@
+<div class="quote-container">
+  <div class="progress-sidebar">
+    <div class="progress-item">
+      <div class="step-circle">1</div>
+      <span>Basic Information</span>
+    </div>
+    <div class="progress-item active">
+      <div class="step-circle">2</div>
+      <span>Business Location</span>
+    </div>
+    <div class="progress-item">
+      <div class="step-circle">3</div>
+      <span>Additional Details</span>
+    </div>
+    <div class="progress-item">
+      <div class="step-circle">4</div>
+      <span>Review</span>
+    </div>
+  </div>
+
+  <div class="form-container">
+    <div class="form-header">
+      <h2>Business Location Details</h2>
+      <div class="status-indicator">
+        <div class="status-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <!-- Question 1: Business Location Type -->
+      <div class="form-group">
+        <label class="field-label">What type of location is your business based out of?</label>
+        <div class="radio-group">
+          <div class="radio-options">
+            <label class="radio-container" *ngFor="let location of locationTypes">
+              <input type="radio" name="businessLocation" [(ngModel)]="businessLocation" [value]="location" required>
+              <span class="radio-custom"></span>
+              <span class="radio-label">{{ location }}</span>
+            </label>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="showErrors && !businessLocation">
+          Please select a business location type
+        </div>
+      </div>
+
+      <!-- Business Street Address -->
+      <div class="form-group">
+        <label class="field-label">Business Street Address</label>
+        <input 
+          type="text" 
+          [(ngModel)]="businessStreetAddress" 
+          placeholder="Enter your full business address"
+          [class.error]="showErrors && !businessStreetAddress"
+          required
+        >
+        <div class="error-message" *ngIf="showErrors && !businessStreetAddress">
+          Business address is required
+        </div>
+      </div>
+
+      <!-- ZIP Code Section -->
+      <div class="form-group">
+        <label class="field-label">ZIP Code</label>
+        <input 
+          type="text" 
+          [(ngModel)]="zipCode" 
+          (input)="validateZipCode()" 
+          placeholder="e.g. 12345"
+          [class.error]="showErrors && (!zipCode || !zipCodeValid)"
+          required
+        >
+        <div class="error-message" *ngIf="showErrors && !zipCode">
+          ZIP code is required
+        </div>
+        <div class="error-message" *ngIf="zipCode && !zipCodeValid">
+          {{ zipCodeErrorMessage }}
+        </div>
+      </div>
+
+      <!-- Own or Rent Question -->
+      <div class="form-group">
+        <label class="field-label">Does your business own or rent this location?</label>
+        <div class="radio-group">
+          <div class="radio-options">
+            <label class="radio-container">
+              <input type="radio" name="ownOrRent" [(ngModel)]="ownOrRent" value="Own" required>
+              <span class="radio-custom"></span>
+              <span class="radio-label">Own</span>
+            </label>
+            <label class="radio-container">
+              <input type="radio" name="ownOrRent" [(ngModel)]="ownOrRent" value="Rent" required>
+              <span class="radio-custom"></span>
+              <span class="radio-label">Rent</span>
+            </label>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="showErrors && !ownOrRent">
+          Please select whether you own or rent
+        </div>
+      </div>
+
+      <!-- Other Locations Question -->
+      <div class="form-group">
+        <label class="field-label">Does your business have any other locations?</label>
+        <div class="radio-group">
+          <div class="radio-options">
+            <label class="radio-container">
+              <input type="radio" name="otherLocations" [(ngModel)]="hasOtherLocations" value="Yes" required>
+              <span class="radio-custom"></span>
+              <span class="radio-label">Yes</span>
+            </label>
+            <label class="radio-container">
+              <input type="radio" name="otherLocations" [(ngModel)]="hasOtherLocations" value="No" required>
+              <span class="radio-custom"></span>
+              <span class="radio-label">No</span>
+            </label>
+          </div>
+        </div>
+        <div class="error-message" *ngIf="showErrors && !hasOtherLocations">
+          Please indicate if you have other locations
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="button-container">
+        <button class="btn-secondary" (click)="previousStep()">Previous</button>
+        <button class="btn-primary" (click)="nextStep()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,137 @@
+<div class="quote-container">
+  <div class="progress-sidebar">
+    <div class="progress-item">
+      <div class="step-circle">1</div>
+      <span>Basic Information</span>
+    </div>
+    <div class="progress-item">
+      <div class="step-circle">2</div>
+      <span>Business Location</span>
+    </div>
+    <div class="progress-item active">
+      <div class="step-circle">3</div>
+      <span>Business Details</span>
+    </div>
+    <div class="progress-item">
+      <div class="step-circle">4</div>
+      <span>Review</span>
+    </div>
+  </div>
+
+  <div class="form-container">
+    <div class="form-header">
+      <h2>Business Details</h2>
+      <div class="status-indicator">
+        <div class="status-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Tell us about your business operations</h3>
+      
+      <!-- Non-profit Question -->
+      <div class="form-group">
+        <label class="field-label">Is this business a non-profit?</label>
+        <div class="radio-group">
+          <div class="radio-options horizontal">
+            <label class="radio-container">
+              <input type="radio" name="nonprofit" [(ngModel)]="isNonProfit" value="Yes">
+              <span class="radio-custom"></span>
+              <span class="radio-label">Yes</span>
+            </label>
+            <label class="radio-container">
+              <input type="radio" name="nonprofit" [(ngModel)]="isNonProfit" value="No">
+              <span class="radio-custom"></span>
+              <span class="radio-label">No</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Description -->
+      <div class="form-group">
+        <label class="field-label">What does this business do? <span class="required">*</span></label>
+        <input 
+          type="text" 
+          [(ngModel)]="businessDescription" 
+          placeholder="Describe your main business activity"
+          [class.error]="showErrors && !businessDescription"
+          required
+        >
+        <div class="error-message" *ngIf="showErrors && !businessDescription">
+          Please describe your business activity
+        </div>
+      </div>
+
+      <!-- Additional Services -->
+      <div class="form-group">
+        <label class="field-label">Do you offer additional services?</label>
+        <div class="radio-group">
+          <div class="radio-options horizontal">
+            <label class="radio-container">
+              <input type="radio" name="services" [(ngModel)]="additionalServices" value="Yes">
+              <span class="radio-custom"></span>
+              <span class="radio-label">Yes</span>
+            </label>
+            <label class="radio-container">
+              <input type="radio" name="services" [(ngModel)]="additionalServices" value="No">
+              <span class="radio-custom"></span>
+              <span class="radio-label">No</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Year -->
+      <div class="form-group">
+        <label class="field-label">What year was your business established? <span class="required">*</span></label>
+        <input 
+          type="text" 
+          [(ngModel)]="businessYear" 
+          placeholder="YYYY"
+          [class.error]="showErrors && !businessYear"
+          required
+        >
+        <div class="error-message" *ngIf="showErrors && !businessYear">
+          Please enter the year your business was established
+        </div>
+      </div>
+
+      <!-- Executive Officers -->
+      <div class="form-group">
+        <label class="field-label">How many executive officers do you have?</label>
+        <input 
+          type="number" 
+          [(ngModel)]="executiveOfficers" 
+          placeholder="0"
+          min="0"
+        >
+        <div class="info-text">Include everyone listed on your business's legal documents.</div>
+      </div>
+
+      <!-- Employee Count -->
+      <div class="form-group">
+        <label class="field-label">Not counting your officers, how many employees do you have?</label>
+        <input 
+          type="number" 
+          [(ngModel)]="employeeCount" 
+          placeholder="0"
+          min="0"
+        >
+        <div class="info-text">If you're not an officer, be sure to include yourself here.</div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="button-container">
+        <button class="btn-secondary" (click)="previousStep()">Previous</button>
+        <button class="btn-primary" (click)="nextStep()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>

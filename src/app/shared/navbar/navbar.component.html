@@ -1,0 +1,90 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow sticky-top">
+  <div class="container">
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" routerLink="/home">
+      <img src="assets/logo.png" alt="Logo" class="logo me-2">
+      <span>BrokerPortal</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navigation Links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/home" routerLinkActive="active">
+            <i class="bi bi-house-door me-1"></i>Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/quotes" routerLinkActive="active">
+            <i class="bi bi-list-check me-1"></i>Quotes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/quote/new" routerLinkActive="active">
+            <i class="bi bi-plus-circle me-1"></i>New Quote
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="insuranceDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-shield-check me-1"></i>Insurance
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="insuranceDropdown">
+            <li><a class="dropdown-item" routerLink="/insurance">Insurance Code</a></li>
+            <li><a class="dropdown-item" routerLink="/coverage-details">Coverage Details</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- User Dropdown -->
+      <div class="d-flex align-items-center">
+        <!-- Search form - small screens hidden, visible on larger screens -->
+        <form class="d-none d-lg-flex me-3">
+          <div class="input-group">
+            <input type="search" class="form-control" placeholder="Search quotes..." aria-label="Search">
+            <button class="btn btn-light" type="submit">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </form>
+
+        <div class="dropdown">
+          <button class="btn btn-light dropdown-toggle d-flex align-items-center" type="button" id="userMenu" 
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle me-2"></i>
+            <span>{{ isLoggedIn ? 'John Broker' : 'Guest' }}</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
+            <li *ngIf="isLoggedIn" class="dropdown-item-text">
+              <div class="d-flex align-items-center p-2">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" 
+                  style="width: 40px; height: 40px;">JB</div>
+                <div>
+                  <div class="fw-bold">John Broker</div>
+                  <div class="small text-muted">john.broker.com</div>
+                </div>
+              </div>
+            </li>
+            <li *ngIf="isLoggedIn"><hr class="dropdown-divider"></li>
+            <li *ngIf="isLoggedIn"><a class="dropdown-item" routerLink="/profile">
+              <i class="bi bi-person me-2"></i>My Profile
+            </a></li>
+            <li *ngIf="isLoggedIn"><a class="dropdown-item" href="#">
+              <i class="bi bi-gear me-2"></i>Settings
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" (click)="toggleAuth()">
+              <i class="bi" [ngClass]="isLoggedIn ? 'bi-box-arrow-right' : 'bi-box-arrow-in-right'"></i>
+              <span class="ms-2">{{ isLoggedIn ? 'Logout' : 'Login' }}</span>
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

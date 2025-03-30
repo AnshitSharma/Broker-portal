@@ -1,0 +1,378 @@
+/* Main Container Layout */
+.quote-container {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Progress Sidebar */
+.progress-sidebar {
+  width: 250px;
+  background-color: #f9f9f9;
+  padding: 30px 15px;
+  border-right: 1px solid #eaeaea;
+}
+
+.progress-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #888;
+  font-size: 14px;
+}
+
+.progress-item.active {
+  color: #333;
+  font-weight: 500;
+}
+
+.step-circle {
+  width: 30px;
+  height: 30px;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  font-weight: 600;
+}
+
+.progress-item.active .step-circle {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Form Container */
+.form-container {
+  flex: 1;
+  padding: 30px;
+  background-color: #fff;
+  overflow-y: auto;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.form-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.status-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+}
+
+.status-icon.completed {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 30px;
+}
+
+/* Coverage intro section */
+.coverage-intro {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.coverage-intro h3 {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.intro-text {
+  color: #666;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* Selection counter */
+.coverage-selection {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.selection-count {
+  display: inline-block;
+  background-color: #f0f8ff;
+  color: #0077cc;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Coverage cards grid */
+.coverage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  margin: 20px 0 30px;
+}
+
+.coverage-card {
+  position: relative;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.coverage-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.coverage-card.selected {
+  border-color: #4caf50;
+  background-color: #f1f8e9;
+}
+
+.select-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  background-color: #4caf50;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.coverage-icon {
+  height: 140px;
+  overflow: hidden;
+  background-color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coverage-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coverage-content {
+  padding: 15px;
+}
+
+.coverage-content h4 {
+  font-size: 16px;
+  color: #333;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+}
+
+.coverage-content p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.price-badge {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background-color: #f5f5f5;
+  color: #333;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.coverage-card.selected .price-badge {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Quote summary section */
+.quote-summary {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.quote-summary h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-row.total {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 2px solid #ddd;
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Coverage note */
+.coverage-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.coverage-note svg {
+  color: #888;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.coverage-note p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Button styles */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #388e3c;
+}
+
+.btn-primary:disabled {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+  background-color: #e0e0e0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .quote-container {
+    flex-direction: column;
+  }
+  
+  .progress-sidebar {
+    width: 100%;
+    padding: 15px;
+    border-right: none;
+    border-bottom: 1px solid #eaeaea;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .coverage-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .form-container {
+    padding: 15px;
+  }
+  
+  .progress-sidebar {
+    overflow-x: auto;
+    padding: 10px;
+  }
+  
+  .progress-item {
+    margin-right: 15px;
+    flex-shrink: 0;
+  }
+  
+  .coverage-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .button-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .btn-secondary {
+    order: 2;
+  }
+  
+  .btn-primary {
+    order: 1;
+  }
+}

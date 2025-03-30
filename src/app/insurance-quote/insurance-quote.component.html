@@ -1,0 +1,171 @@
+<div class="quote-container">
+  <div class="progress-sidebar">
+    <div class="progress-item active">
+      <div class="step-circle">1</div>
+      <span>Basic Information</span>
+    </div>
+    <div class="progress-item">
+      <div class="step-circle">2</div>
+      <span>Job Requirement</span>
+    </div>
+    <div class="progress-item">
+      <div class="step-circle">3</div>
+      <span>Additional Details</span>
+    </div>
+    <div class="progress-item">
+      <div class="step-circle">4</div>
+      <span>Review</span>
+    </div>
+  </div>
+
+  <div class="form-container">
+    <div class="form-header">
+      <h2>Basic Information</h2>
+      <div class="status-indicator">
+        <div class="status-icon completed">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Let's start with some basic information</h3>
+      
+      <!-- Business Description Box -->
+      <div class="info-box">
+        <label class="field-label">Which best describes your business?</label>
+        <div class="checkbox-group">
+          <label class="checkbox-container">
+            <input type="checkbox" [(ngModel)]="businessStatus[0].selected">
+            <span class="checkbox-custom"></span>
+            I'm in business and have insurance.
+          </label>
+          
+          <label class="checkbox-container">
+            <input type="checkbox" [(ngModel)]="businessStatus[1].selected">
+            <span class="checkbox-custom"></span>
+            I'm in business but don't have insurance yet.
+          </label>
+          
+          <label class="checkbox-container">
+            <input type="checkbox" [(ngModel)]="businessStatus[2].selected">
+            <span class="checkbox-custom"></span>
+            I'm starting a business and curious about insurance.
+          </label>
+        </div>
+      </div>
+      
+      <!-- Business Structure Dropdown -->
+      <div class="form-group">
+        <label class="field-label">How is your business structured?</label>
+        <div class="select-wrapper" [class.error]="showErrors && !businessStructure">
+          <select [(ngModel)]="businessStructure">
+            <option value="" disabled selected>Please select</option>
+            <option *ngFor="let structure of businessStructures" [value]="structure">{{ structure }}</option>
+          </select>
+           
+        </div>
+        <div class="error-message" *ngIf="showErrors && !businessStructure">
+          Please select a business structure
+        </div>
+      </div>
+      
+      <!-- Show Owner Fields When Business Structure is Selected -->
+      <div *ngIf="businessStructure" class="owner-section">
+        <div class="owner-info">
+          <div class="form-group">
+            <label for="firstName" class="field-label">Owner's First Name <span class="required">*</span></label>
+            <input 
+              id="firstName" 
+              type="text" 
+              [(ngModel)]="ownerFirstName" 
+              [class.error]="showErrors && !ownerFirstName"
+              (blur)="validateName('first')"
+              required
+            >
+            <div class="error-message" *ngIf="showErrors && !ownerFirstName">
+              First name is required
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="lastName" class="field-label">Owner's Last Name <span class="required">*</span></label>
+            <input 
+              id="lastName" 
+              type="text" 
+              [(ngModel)]="ownerLastName" 
+              [class.error]="showErrors && !ownerLastName"
+              (blur)="validateName('last')"
+              required
+            >
+            <div class="error-message" *ngIf="showErrors && !ownerLastName">
+              Last name is required
+            </div>
+          </div>
+        </div>
+        
+        <div class="info-text">This name will appear on your policy.</div>
+        
+        <div class="form-group">
+          <label for="businessName" class="field-label">What name do you do business as? (Optional)</label>
+          <input id="businessName" type="text" [(ngModel)]="businessName">
+        </div>
+      </div>
+
+      <!-- Location section (similar to reference image) -->
+      <div class="form-group" *ngIf="businessStructure && ownerFirstName && ownerLastName">
+        <!-- <h3 class="section-title">Location</h3>
+        
+        <div class="location-fields">
+     
+          
+          <div class="form-group">
+            <label class="field-label">Country</label>
+            <div class="select-wrapper">
+              <select [(ngModel)]="country">
+                <option value="" disabled selected>Select Country</option>
+                <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+              </select>
+               
+            </div>
+          </div>
+        </div>
+        
+        <div class="location-fields">
+         
+          <div class="form-group">
+            <label class="field-label">Zip/Postal code</label>
+            <input 
+              type="text" 
+              [(ngModel)]="zipCode" 
+              placeholder="ex. 098098"
+              [class.error]="showErrors && !isValidZipCode()"
+              (blur)="validateZipCode()"
+              maxlength="10"
+            >
+            <div class="error-message" *ngIf="showErrors && zipCode && !isValidZipCode()">
+              Please enter a valid zip/postal code
+            </div>
+            <div class="error-message" *ngIf="showErrors && !zipCode && zipCodeRequired">
+              Zip/postal code is required
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="field-label">Address</label>
+          <input type="text" [(ngModel)]="address" placeholder="Street address">
+        </div>
+      </div> -->
+
+      <!-- Navigation Buttons -->
+      <div class="button-container">
+        <button class="btn-secondary" (click)="previousStep()" [hidden]="currentStep === 1">Previous</button>
+        <button class="btn-primary" (click)="nextStep()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>

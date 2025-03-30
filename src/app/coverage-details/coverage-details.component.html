@@ -1,0 +1,98 @@
+<div class="quote-container">
+  <div class="progress-sidebar">
+    <div class="progress-item">
+      <div class="step-circle">1</div>
+      <span>Basic Information</span>
+    </div>
+    <div class="progress-item">
+      <div class="step-circle">2</div>
+      <span>Business Location</span>
+    </div>
+    <div class="progress-item">
+      <div class="step-circle">3</div>
+      <span>Business Details</span>
+    </div>
+    <div class="progress-item active">
+      <div class="step-circle">4</div>
+      <span>Coverage Review</span>
+    </div>
+  </div>
+
+  <div class="form-container">
+    <div class="form-header">
+      <h2>Coverage Details</h2>
+      <div class="status-indicator">
+        <div class="status-icon completed">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="coverage-intro">
+        <h3>Safeguarding Your Operations</h3>
+        <p class="intro-text">Please select the coverage types you need for your business. Click on each card to select or deselect the coverage.</p>
+      </div>
+      
+      <div class="coverage-selection">
+        <p class="selection-count">{{getSelectedCount()}} of {{coverages.length}} coverages selected</p>
+      </div>
+
+      <div class="coverage-grid">
+        <div 
+          class="coverage-card" 
+          *ngFor="let coverage of coverages" 
+          [class.selected]="coverage.selected"
+          (click)="toggleSelection(coverage)">
+          <div class="select-indicator">
+            <svg *ngIf="coverage.selected" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="coverage-icon">
+            <img [src]="coverage.image" [alt]="coverage.title" (error)="handleImageError($event)">
+          </div>
+          <div class="coverage-content">
+            <h4>{{ coverage.title }}</h4>
+            <p>{{ coverage.description }}</p>
+          </div>
+          <div class="price-badge">{{ coverage.price | currency }}</div>
+        </div>
+      </div>
+      
+      <div class="quote-summary" *ngIf="getSelectedCount() > 0">
+        <h4>Your Coverage Summary</h4>
+        <div class="summary-row" *ngFor="let coverage of getSelectedCoverages()">
+          <span>{{ coverage.title }}</span>
+          <span>{{ coverage.price | currency }}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total Annual Premium</span>
+          <span>{{ getTotalPrice() | currency }}</span>
+        </div>
+      </div>
+      
+      <div class="coverage-note">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <p>All coverages are subject to the terms, conditions, and exclusions of the actual policy issued. This quote is an estimate based on the information provided.</p>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="button-container">
+        <button class="btn-secondary" (click)="previousStep()">Previous</button>
+        <button class="btn-primary" [disabled]="getSelectedCount() === 0" (click)="nextStep()">
+          Get Quote
+          <span *ngIf="getSelectedCount() > 0">({{ getTotalPrice() | currency }})</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,334 @@
+/* Main Container Layout */
+.quote-container {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Progress Sidebar */
+.progress-sidebar {
+  width: 250px;
+  background-color: #f9f9f9;
+  padding: 30px 15px;
+  border-right: 1px solid #eaeaea;
+}
+
+.progress-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #888;
+  font-size: 14px;
+}
+
+.progress-item.active {
+  color: #333;
+  font-weight: 500;
+}
+
+.step-circle {
+  width: 30px;
+  height: 30px;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  font-weight: 600;
+}
+
+.progress-item.active .step-circle {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Form Container */
+.form-container {
+  flex: 1;
+  padding: 30px;
+  background-color: #fff;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.form-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.status-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+}
+
+.status-icon.completed {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 30px;
+}
+
+.form-section h3 {
+  font-size: 18px;
+  color: #444;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+/* Form Controls */
+.form-group {
+  margin-bottom: 25px;
+}
+
+.field-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.required {
+  color: #f44336;
+  margin-left: 3px;
+}
+
+/* Radio buttons */
+.radio-group {
+  margin-top: 10px;
+}
+
+.radio-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.radio-options.horizontal {
+  flex-direction: row;
+  gap: 20px;
+}
+
+.radio-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.radio-options:not(.horizontal) .radio-container {
+  padding: 12px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: all 0.2s ease;
+}
+
+.radio-options:not(.horizontal) .radio-container:hover {
+  background-color: #f9f9f9;
+  border-color: #d0d0d0;
+}
+
+.radio-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.radio-custom {
+  height: 20px;
+  width: 20px;
+  background-color: white;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  display: inline-block;
+  margin-right: 10px;
+  position: relative;
+}
+
+.radio-container input:checked ~ .radio-custom {
+  border-color: #4caf50;
+}
+
+.radio-custom:after {
+  content: "";
+  position: absolute;
+  display: none;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4caf50;
+}
+
+.radio-container input:checked ~ .radio-custom:after {
+  display: block;
+}
+
+.radio-container input:checked ~ .radio-label {
+  font-weight: 500;
+}
+
+.radio-label {
+  flex: 1;
+}
+
+/* Text inputs */
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+  border-color: #4caf50;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* Number input specific styles */
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Error states */
+input.error {
+  border-color: #f44336;
+  background-color: #fff8f8;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Info text */
+.info-text {
+  font-size: 13px;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* Button styles */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #388e3c;
+}
+
+.btn-secondary {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+  background-color: #e0e0e0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .quote-container {
+    flex-direction: column;
+  }
+  
+  .progress-sidebar {
+    width: 100%;
+    padding: 15px;
+    border-right: none;
+    border-bottom: 1px solid #eaeaea;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .radio-options.horizontal {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-container {
+    padding: 15px;
+  }
+  
+  .progress-sidebar {
+    overflow-x: auto;
+    padding: 10px;
+  }
+  
+  .progress-item {
+    margin-right: 15px;
+    flex-shrink: 0;
+  }
+  
+  .button-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .btn-secondary {
+    order: 2;
+  }
+  
+  .btn-primary {
+    order: 1;
+  }
+}

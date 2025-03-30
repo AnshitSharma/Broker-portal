@@ -1,0 +1,158 @@
+<div class="quote-container">
+    <div class="progress-sidebar">
+      <div class="progress-item">
+        <div class="step-circle">1</div>
+        <span>Basic Information</span>
+      </div>
+      <div class="progress-item">
+        <div class="step-circle">2</div>
+        <span>Business Location</span>
+      </div>
+      <div class="progress-item">
+        <div class="step-circle">3</div>
+        <span>Business Details</span>
+      </div>
+      <div class="progress-item">
+        <div class="step-circle">4</div>
+        <span>Coverage Selection</span>
+      </div>
+      <div class="progress-item active">
+        <div class="step-circle">5</div>
+        <span>Quote Summary</span>
+      </div>
+    </div>
+  
+    <div class="form-container">
+      <div class="form-header">
+        <h2>Your Insurance Quote</h2>
+        <div class="status-indicator">
+          <div class="status-icon completed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+        </div>
+      </div>
+  
+      <div class="form-section">
+        <div class="quote-header">
+          <div class="quote-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h20v14H2z"></path>
+              <path d="M2 7h20"></path>
+              <circle cx="12" cy="15" r="1"></circle>
+              <path d="M17 21H7v-4h10z"></path>
+            </svg>
+          </div>
+          <div class="quote-title">
+            <h3>Business Insurance Quote</h3>
+            <p class="quote-id">Quote #: {{ quoteId }}</p>
+            <p class="quote-date">Generated on: {{ quoteDate | date:'mediumDate' }}</p>
+          </div>
+        </div>
+  
+        <div class="quote-section">
+          <h4>Business Information</h4>
+          <div class="info-grid">
+            <div class="info-group">
+              <label>Business Owner</label>
+              <p>{{ businessInfo.ownerName }}</p>
+            </div>
+            <div class="info-group">
+              <label>Business Name</label>
+              <p>{{ businessInfo.businessName || 'N/A' }}</p>
+            </div>
+            <div class="info-group">
+              <label>Business Type</label>
+              <p>{{ businessInfo.businessStructure }}</p>
+            </div>
+            <div class="info-group">
+              <label>Year Established</label>
+              <p>{{ businessInfo.businessYear }}</p>
+            </div>
+            <div class="info-group">
+              <label>Employees</label>
+              <p>{{ businessInfo.employeeCount || '0' }}</p>
+            </div>
+            <div class="info-group">
+              <label>Officers</label>
+              <p>{{ businessInfo.executiveOfficers || '0' }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="quote-section">
+          <h4>Location Information</h4>
+          <div class="info-grid">
+            <div class="info-group">
+              <label>Address</label>
+              <p>{{ locationInfo.businessStreetAddress }}</p>
+            </div>
+            <div class="info-group">
+              <label>ZIP Code</label>
+              <p>{{ locationInfo.zipCode }}</p>
+            </div>
+            <div class="info-group">
+              <label>Location Type</label>
+              <p>{{ locationInfo.businessLocation }}</p>
+            </div>
+            <div class="info-group">
+              <label>Ownership</label>
+              <p>{{ locationInfo.ownOrRent }}</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="quote-section">
+          <h4>Selected Coverages</h4>
+          <div class="coverage-summary">
+            <div class="coverage-table">
+              <div class="table-header">
+                <div class="header-cell">Coverage Type</div>
+                <div class="header-cell">Description</div>
+                <div class="header-cell">Annual Premium</div>
+              </div>
+              <div class="table-row" *ngFor="let coverage of selectedCoverages">
+                <div class="row-cell">{{ coverage.title }}</div>
+                <div class="row-cell description">{{ coverage.description }}</div>
+                <div class="row-cell">{{ coverage.price | currency }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="quote-summary-box">
+          <div class="summary-row">
+            <span>Total Annual Premium:</span>
+            <span class="premium-total">{{ totalPrice | currency }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Monthly Payment Option:</span>
+            <span>{{ (totalPrice / 12) | currency }}/month</span>
+          </div>
+          <div class="payment-options">
+            <p>Payment Options: Annual, Semi-Annual, or Monthly</p>
+          </div>
+        </div>
+  
+        <div class="quote-note">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <div>
+            <p><strong>Important Information:</strong></p>
+            <p>This quote is valid for 30 days from the date of generation. Coverage is subject to underwriting approval. Final premium may vary based on additional information obtained during the underwriting process.</p>
+          </div>
+        </div>
+  
+        <!-- Navigation Buttons -->
+        <div class="button-container">
+          <button class="btn-secondary" (click)="previousStep()">Back to Coverage Selection</button>
+          <button class="btn-primary" (click)="proceedToApplication()">Proceed with Application</button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,4 +1,3 @@
-// quote-final.component.ts
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { QuoteService } from '../services/quote.service';
@@ -16,11 +15,10 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     RouterModule
-  ],
-  providers: [QuoteService] 
+  ]
 })
 export class QuoteFinalComponent implements OnInit {
-  quoteForm: FormGroup = this.createForm(); // Initialize directly to fix TS2564 error
+  quoteForm: FormGroup = this.createForm();
   quoteList: any[] = [];
   filteredQuoteList: any[] = [];
   
@@ -36,13 +34,13 @@ export class QuoteFinalComponent implements OnInit {
   
   // View state variables
   isLoading = false;
-  viewMode = 'list'; // 'list', 'new', 'revise', 'bind'
+  viewMode = 'list'; 
   selectedQuote: any = null;
 
-  // Math property for template usage
-  Math = Math; // Add this to fix Math.ceil error
+  // Make Math available in template
+  Math = Math; 
   
-  // Provider data (would typically come from an API)
+  // Demo provider data
   providers = [
     { 
       id: 1, 
@@ -58,7 +56,7 @@ export class QuoteFinalComponent implements OnInit {
         'Waiver of premium on permanent accidental disability free'
       ],
       discount: '₹3.5 K',
-      calculatedPremium: 598 // Add this property to fix the error
+      calculatedPremium: 598
     },
     { 
       id: 2, 
@@ -73,7 +71,7 @@ export class QuoteFinalComponent implements OnInit {
         'Extend your policy at Maturity free'
       ],
       discount: '₹4.4 K',
-      calculatedPremium: 749 // Add this property to fix the error
+      calculatedPremium: 749
     },
     { 
       id: 3, 
@@ -89,7 +87,7 @@ export class QuoteFinalComponent implements OnInit {
         'Option to delay 12 Months Premium free'
       ],
       discount: '',
-      calculatedPremium: 659 // Add this property to fix the error
+      calculatedPremium: 659
     },
     { 
       id: 4, 
@@ -101,7 +99,7 @@ export class QuoteFinalComponent implements OnInit {
       maxLimit: '100 yrs',
       benefits: [],
       discount: '₹8.8 K',
-      calculatedPremium: 649 // Add this property to fix the error
+      calculatedPremium: 649
     }
   ];
 
@@ -160,7 +158,7 @@ export class QuoteFinalComponent implements OnInit {
   loadQuotes(): void {
     this.isLoading = true;
     
-    // This would typically be an API call
+    // Call the service to get quotes
     this.quoteService.getQuotes().subscribe({
       next: (quotes) => {
         this.quoteList = quotes;
@@ -209,13 +207,10 @@ export class QuoteFinalComponent implements OnInit {
     if (this.quoteForm.valid) {
       const formData = this.quoteForm.value;
       
-      // This would typically be an API call
       this.quoteService.calculateRate(formData).subscribe({
-        next: (rates) => {
-          // In a real app, this would come from the API
-          // For demo purposes, we're using our static providers data
+        next: () => {
+          // Update calculated premium
           this.providers.forEach(provider => {
-            // Update calculated premium
             provider.calculatedPremium = this.getRandomPremium(provider);
           });
         },
@@ -248,7 +243,7 @@ export class QuoteFinalComponent implements OnInit {
       };
       
       this.quoteService.submitQuote(quoteData).subscribe({
-        next: (response) => {
+        next: () => {
           this.loadQuotes();
           this.viewMode = 'list';
           this.isLoading = false;
@@ -283,7 +278,7 @@ export class QuoteFinalComponent implements OnInit {
       };
       
       this.quoteService.reviseQuote(revisionData).subscribe({
-        next: (response) => {
+        next: () => {
           this.loadQuotes();
           this.viewMode = 'list';
           this.isLoading = false;
@@ -314,7 +309,7 @@ export class QuoteFinalComponent implements OnInit {
       };
       
       this.quoteService.bindQuote(bindData).subscribe({
-        next: (response) => {
+        next: () => {
           this.loadQuotes();
           this.viewMode = 'list';
           this.isLoading = false;
@@ -332,7 +327,7 @@ export class QuoteFinalComponent implements OnInit {
       this.isLoading = true;
       
       this.quoteService.deleteQuote(quoteId).subscribe({
-        next: (response) => {
+        next: () => {
           this.loadQuotes();
           this.isLoading = false;
         },

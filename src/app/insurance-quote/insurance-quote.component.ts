@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { StorageService } from '../services/storage.ts.service';
 
 @Component({
   selector: 'app-insurance-quote',
@@ -12,134 +12,127 @@ import { HttpClient } from '@angular/common/http';
   imports: [CommonModule, FormsModule]
 })
 export class InsuranceCodeComponent implements OnInit {
+  // Step progress
   currentStep = 1;
   showErrors = false;
-  formValid = false;
-
-  // Business status options
+  
+  // Business Status
   businessStatus = [
-    { label: "I'm in business and have insurance.", selected: false },
-    { label: "I'm in business but don't have insurance yet.", selected: false },
-    { label: "I'm starting a business and curious about insurance.", selected: false }
+    { id: 'active-insured', label: 'I\'m in business and have insurance.', selected: false },
+    { id: 'active-uninsured', label: 'I\'m in business but don\'t have insurance yet.', selected: false },
+    { id: 'starting', label: 'I\'m starting a business and curious about insurance.', selected: false }
   ];
-
-  // Business structure options
-  businessStructures = [
-    'Association', 
-    'Corporation', 
-    'Professional Corporation', 
-    'S-Corporation', 
-    'Individual / Sole Proprietor', 
-    'Joint Venture', 
-    'Limited Liability Corporation (LLC)', 
-    'Limited Liability Partnership (LLP)', 
-    'Partnership'
-  ];
-
-  // Form fields
+  
+  // Business Structure
   businessStructure = '';
+  businessStructures = [
+    'Sole Proprietorship',
+    'Limited Liability Corporation (LLC)',
+    'S-Corporation',
+    'C-Corporation',
+    'Partnership',
+    'Non-Profit Organization',
+    'Other'
+  ];
+  
+  // Owner Information
   ownerFirstName = '';
   ownerLastName = '';
   businessName = '';
   
-  // Location fields
-  city = '';
-  country = '';
-  state = '';
-  zipCode = '';
-  address = '';
-  
-  // Sample data for dropdowns
-  cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix'];
-  countries = ['United States', 'Canada', 'Mexico', 'United Kingdom', 'Australia','India'];
-  states = ['California', 'New York', 'Texas', 'Florida', 'Illinois'];
-
   constructor(
-    private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private storageService: StorageService
   ) {}
-
+  
   ngOnInit(): void {
-    // Initialize any required data
+    // Check if we already have stored data (returning from a later step)
+    this.loadStoredData();
   }
-
-  // Form validation methods
-  validateBusinessStructure(): void {
-    if (this.businessStructure) {
-      // Clear any previous errors
-      document.querySelector('.select-wrapper')?.classList.remove('error');
+  
+  // Load any previously stored data
+  loadStoredData(): void {
+    const storedData = this.storageService.getItem('quoteBasicInfo');
+    if (storedData) {
+      // Business Status
+      if (storedData.businessStatus) {
+        this.businessStatus = storedData.businessStatus;
+      }
+      
+      // Business Structure
+      if (storedData.businessStructure) {
+        this.businessStructure = storedData.businessStructure;
+      }
+      
+      // Owner Information
+      if (storedData.ownerFirstName) {
+        this.ownerFirstName = storedData.ownerFirstName;
+      }
+      
+      if (storedData.ownerLastName) {
+        this.ownerLastName = storedData.ownerLastName;
+      }
+      
+      if (storedData.businessName) {
+        this.businessName = storedData.businessName;
+      }
     }
   }
-
-
-zipCodePattern = /^[0-9]{5}(-[0-9]{4})?$/;  // US format, adjust as needed
-zipCodeRequired = true;
-  validateZipCode(): void {
-    // You can add specific logic here if needed
-    // This will be called when the field loses focus
-  }
-  isValidZipCode(): boolean {
-    if (!this.zipCode && !this.zipCodeRequired) {
-      return true;  // Empty is OK if not required
-    }
-    
-    if (!this.zipCode && this.zipCodeRequired) {
-      return false;  // Empty is not OK if required
-    }
-    
-    // Check if it matches the pattern (US zip code format by default)
-    return this.zipCodePattern.test(this.zipCode);
-  }
-
-  validateName(type: 'first' | 'last'): void {
-    if (type === 'first' && this.ownerFirstName) {
-      document.getElementById('firstName')?.classList.remove('error');
-    } else if (type === 'last' && this.ownerLastName) {
-      document.getElementById('lastName')?.classList.remove('error');
-    }
-  }
-
+  
+  // Validate form before proceeding
   validateForm(): boolean {
     // Check if at least one business status is selected
     const hasBusinessStatus = this.businessStatus.some(status => status.selected);
     
-    // Basic validation
-    if (!this.businessStructure || !this.ownerFirstName || !this.ownerLastName) {
-      this.showErrors = true;
-      return false;
-    }
+    // Check if business structure is selected
+    const hasBusinessStructure = !!this.businessStructure;
     
-    return true;
+    // Check if owner information is provided
+    const hasOwnerInfo = !!this.ownerFirstName && !!this.ownerLastName;
+    
+    return hasBusinessStatus && hasBusinessStructure && hasOwnerInfo;
   }
-
-
-  // Navigation methods
-  nextStep(): void {
-  this.showErrors = true;
   
-  if (this.validateForm()) {
-  
-    if (this.currentStep === 1) {
-      this.currentStep = 2;
-
-      this.router.navigate(['/next-page']);
-    }
-  } else {
-   
-    const firstError = document.querySelector('.error');
-    if (firstError) {
-      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // Validate name fields
+  validateName(type: 'first' | 'last'): void {
+    if (type === 'first' && this.ownerFirstName) {
+      // Optional validation for first name
+    } else if (type === 'last' && this.ownerLastName) {
+      // Optional validation for last name
     }
   }
-}
+  
+  // Navigate to the previous step
   previousStep(): void {
     if (this.currentStep > 1) {
       this.currentStep--;
     }
   }
-
-  // Helper method to check if any business status is selected
-  get isAnyBusinessStatusSelected(): boolean {
-    return this.businessStatus.some(status => status.selected);
+  
+  // Navigate to the next step
+  nextStep(): void {
+    this.showErrors = true;
+    
+    if (this.validateForm()) {
+      // Save data to storage before navigating
+      this.saveDataToStorage();
+      
+      // Navigate to the next step
+      this.router.navigate(['/next-page']);
+    }
+  }
+  
+  // Save data to storage
+  saveDataToStorage(): void {
+    const basicInfo = {
+      businessStatus: this.businessStatus,
+      businessStructure: this.businessStructure,
+      ownerFirstName: this.ownerFirstName,
+      ownerLastName: this.ownerLastName,
+      businessName: this.businessName,
+      ownerFullName: `${this.ownerFirstName} ${this.ownerLastName}`
+    };
+    
+    this.storageService.setItem('quoteBasicInfo', basicInfo);
   }
 }

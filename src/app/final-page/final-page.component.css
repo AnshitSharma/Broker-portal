@@ -217,9 +217,6 @@ input[type="number"]:focus {
 }
 
 /* Number input specific styles */
-input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
-}
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

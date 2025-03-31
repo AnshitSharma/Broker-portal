@@ -14,18 +14,23 @@ import { QuoteFinalComponent } from './quote-final/quote-final.component';
 
 
 export const routes: Routes = [
-  { path: 'quotes', component: QuoteListComponent },
-  { path: 'quote/new', component: QuoteFormComponent },
-  { path: 'quote/:id', component: QuoteDetailsComponent },
+  { path: 'quotes-list', component: QuoteListComponent },
+  { path: 'quote-form/new', component: QuoteFormComponent },
+  { path: 'quote-details/:id', component: QuoteDetailsComponent },
   { path: 'insurance', component: InsuranceCodeComponent },
   { path: 'next-page', component: NextPageComponent },
   { path: 'final-page', component: FinalPageComponent },
   { path: 'coverage-details', component: CoverageDetailsComponent },
   { path: 'quote-summary', component: QuoteSummaryComponent },
-  // { path: 'quote-final', loadComponent: () => import('./quote-final/quote-final.component').then(m => m.QuoteFinalComponent) },
-  { path: 'quote-final', component: QuoteFinalComponent },
-  { path: 'quotes/:id', component: QuoteFinalComponent },
-  // { path: 'quotes/:id', loadComponent: () => import('./quote-final/quote-final.component').then(m => m.QuoteFinalComponent) },
+  { 
+    path: 'quote-final', 
+    loadComponent: () => import('./quote-final/quote-final.component').then(m => m.QuoteFinalComponent) 
+  },
+  { 
+    path: 'quotes/:id', 
+    loadComponent: () => import('./quote-final/quote-final.component').then(m => m.QuoteFinalComponent) 
+  },
   { path: 'home', component: HomeComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '**', redirectTo: '/home' }
 ];

@@ -1,20 +1,24 @@
 <div class="quote-container">
   <div class="progress-sidebar">
-    <div class="progress-item">
+    <div class="progress-item" [class.active]="isStepActive(1)">
       <div class="step-circle">1</div>
       <span>Basic Information</span>
     </div>
-    <div class="progress-item">
+    <div class="progress-item" [class.active]="isStepActive(2)">
       <div class="step-circle">2</div>
       <span>Business Location</span>
     </div>
-    <div class="progress-item active">
+    <div class="progress-item" [class.active]="isStepActive(3)">
       <div class="step-circle">3</div>
       <span>Business Details</span>
     </div>
-    <div class="progress-item">
+    <div class="progress-item" [class.active]="isStepActive(4)">
       <div class="step-circle">4</div>
-      <span>Review</span>
+      <span>Coverage Selection</span>
+    </div>
+    <div class="progress-item" [class.active]="isStepActive(5)">
+      <div class="step-circle">5</div>
+      <span>Quote Summary</span>
     </div>
   </div>
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { StorageService } from '../services/storage.ts.service';
 
 interface Coverage {
   title: string;
@@ -63,12 +64,31 @@ export class CoverageDetailsComponent implements OnInit {
   // Fallback images in case the actual images don't load
   fallbackImageUrl = 'assets/images/default_coverage.jpg';
   
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private storageService: StorageService
+  ) {}
   
   ngOnInit(): void {
-    // Set the first coverage as selected by default
-    if (this.coverages.length > 0) {
+    // Load previously stored data if available
+    this.loadStoredData();
+    
+    // If no coverage was previously selected, set the first one as default
+    if (this.getSelectedCount() === 0 && this.coverages.length > 0) {
       this.coverages[0].selected = true;
+    }
+  }
+  
+  // Load any previously stored coverage data
+  loadStoredData(): void {
+    const storedData = this.storageService.getItem('quoteCoverageDetails');
+    if (storedData) {
+      // Apply the saved selection state to our coverages
+      this.coverages.forEach((coverage, index) => {
+        if (storedData[index] && storedData[index].selected) {
+          coverage.selected = true;
+        }
+      });
     }
   }
   
@@ -112,6 +132,13 @@ export class CoverageDetailsComponent implements OnInit {
       event.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22150%22%20viewBox%3D%220%200%20200%20150%22%3E%3Crect%20fill%3D%22%23ddd%22%20width%3D%22200%22%20height%3D%22150%22%2F%3E%3Ctext%20fill%3D%22rgba%280%2C0%2C0%2C0.5%29%22%20font-family%3D%22sans-serif%22%20font-size%3D%2220%22%20dy%3D%220.35em%22%20text-anchor%3D%22middle%22%20x%3D%22100%22%20y%3D%2275%22%3EImage%3C%2Ftext%3E%3C%2Fsvg%3E';
     }
   }
+  
+  // Save data to storage
+  saveDataToStorage(): void {
+    this.storageService.setItem('quoteCoverageDetails', this.coverages);
+    this.storageService.setItem('quoteTotalPrice', this.getTotalPrice().toString());
+  }
+  
   /**
    * Navigate to the previous step
    */
@@ -128,14 +155,8 @@ export class CoverageDetailsComponent implements OnInit {
       return;
     }
     
-    // Prepare selected coverage data to pass to the next component
-    const selectedCoverages = this.getSelectedCoverages();
-    const totalPrice = this.getTotalPrice();
-    
-    // You could use a service to store this data or pass it via navigation extras
-    // For now, we'll store it in sessionStorage
-    sessionStorage.setItem('selectedCoverages', JSON.stringify(selectedCoverages));
-    sessionStorage.setItem('totalPrice', totalPrice.toString());
+    // Save selected coverage data and total price to storage
+    this.saveDataToStorage();
     
     this.router.navigate(['/quote-summary']);
   }

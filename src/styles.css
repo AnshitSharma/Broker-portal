@@ -1,1 +1,85 @@
 /* You can add global styles to this file, and also import other style files */
+/* Add these styles to your main styles.css file */
+
+/* Apply glassmorphism support for various browsers */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+  }
+  
+  /* Safari-specific styles */
+  .safari .glass-effect {
+    /* Fallback for browsers that don't support backdrop-filter */
+    background: rgba(10, 88, 202, 0.9);
+  }
+  
+  /* Smooth scrolling for the whole page */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Add a subtle gradient background to the body */
+  body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+  }
+  
+  /* Improved focus styles for accessibility */
+  *:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(10, 88, 202, 0.3);
+  }
+  
+  /* Custom scrollbar for modern browsers */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba(240, 240, 240, 0.8);
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(10, 88, 202, 0.5);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(10, 88, 202, 0.7);
+  }
+  
+  /* Animation keyframes for various effects */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideInUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Application-wide animation class */
+  .animated {
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+  }
+  
+  .fade-in {
+    animation-name: fadeIn;
+  }
+  
+  .slide-in-up {
+    animation-name: slideInUp;
+  }

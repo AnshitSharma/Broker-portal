@@ -94,27 +94,25 @@
 
 /* Coverage intro section */
 .coverage-intro {
-  text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .coverage-intro h3 {
-  font-size: 20px;
-  color: #444;
+  color: #2c3e50;
+  font-size: 1.4rem;
+  margin-top: 0;
   margin-bottom: 10px;
   font-weight: 500;
 }
 
-.intro-text {
-  color: #666;
-  max-width: 700px;
-  margin: 0 auto;
-  line-height: 1.5;
+.section-description {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-bottom: 0;
 }
 
 /* Selection counter */
 .coverage-selection {
-  text-align: center;
   margin-bottom: 20px;
 }
 
@@ -126,30 +124,30 @@
   border-radius: 20px;
   font-weight: 500;
   font-size: 14px;
+  margin: 0;
 }
 
 /* Coverage cards grid */
 .coverage-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
-  margin: 20px 0 30px;
+  margin-bottom: 30px;
 }
 
 .coverage-card {
-  position: relative;
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
   border: 2px solid transparent;
 }
 
 .coverage-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .coverage-card.selected {
@@ -157,69 +155,104 @@
   background-color: #f1f8e9;
 }
 
-.select-indicator {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 2;
-  width: 24px;
-  height: 24px;
-  background-color: #4caf50;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.coverage-icon {
-  height: 140px;
-  overflow: hidden;
-  background-color: #eee;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.coverage-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.coverage-content {
+.coverage-header {
   padding: 15px;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.coverage-content h4 {
+.coverage-header h4 {
+  margin: 0;
   font-size: 16px;
   color: #333;
-  margin: 0 0 10px 0;
   font-weight: 600;
 }
 
-.coverage-content p {
+.selection-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coverage-card.selected .selection-indicator {
+  background-color: #4caf50;
+  border-color: #4caf50;
+}
+
+.checkmark {
+  width: 8px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-top: -2px;
+}
+
+.coverage-body {
+  padding: 15px;
+}
+
+.coverage-body p {
+  margin-top: 0;
+  margin-bottom: 10px;
   font-size: 14px;
   color: #666;
-  margin: 0;
   line-height: 1.4;
 }
 
-.price-badge {
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-  background-color: #f5f5f5;
-  color: #333;
-  padding: 4px 8px;
-  border-radius: 4px;
+.base-premium {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 15px;
+}
+
+.coverage-limits {
+  padding: 15px;
+  border-top: 1px solid #eee;
+}
+
+.coverage-limits h5 {
+  margin-top: 0;
+  margin-bottom: 10px;
   font-size: 14px;
+  color: #333;
   font-weight: 500;
 }
 
-.coverage-card.selected .price-badge {
+.limit-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.limit-option {
+  padding: 5px 10px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.limit-option:hover {
+  background-color: #e0e0e0;
+}
+
+.limit-option.selected {
   background-color: #4caf50;
   color: white;
+}
+
+.limit-info {
+  font-size: 12px;
+  color: #666;
+  margin-left: 4px;
 }
 
 /* Quote summary section */
@@ -236,6 +269,8 @@
   color: #333;
   font-size: 18px;
   font-weight: 600;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
 }
 
 .summary-row {
@@ -262,35 +297,41 @@
 .coverage-note {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  background-color: #f5f5f5;
+  gap: 12px;
+  background-color: #fff8dc;
   padding: 15px;
   border-radius: 8px;
-  margin-top: 20px;
+  margin-bottom: 30px;
 }
 
-.coverage-note svg {
-  color: #888;
+.note-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #f39c12;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
-.coverage-note p {
+.note-content p {
   margin: 0;
   font-size: 14px;
-  color: #666;
+  color: #333;
   line-height: 1.4;
 }
 
-/* Button styles */
-.button-container {
+/* Navigation Buttons */
+.navigation-buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: 40px;
+  margin-top: 20px;
 }
 
-.btn-primary,
-.btn-secondary {
+.back-button, .next-button {
   padding: 12px 24px;
   border-radius: 6px;
   font-weight: 500;
@@ -300,28 +341,28 @@
   border: none;
 }
 
-.btn-primary {
-  background-color: #4caf50;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #388e3c;
-}
-
-.btn-primary:disabled {
-  background-color: #9e9e9e;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
+.back-button {
   background-color: #f5f5f5;
   color: #333;
   border: 1px solid #ddd;
 }
 
-.btn-secondary:hover {
+.back-button:hover {
   background-color: #e0e0e0;
+}
+
+.next-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.next-button:hover {
+  background-color: #388e3c;
+}
+
+.next-button:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
 }
 
 /* Responsive adjustments */
@@ -340,7 +381,7 @@
   }
   
   .coverage-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: 1fr;
   }
 }
 
@@ -359,20 +400,16 @@
     flex-shrink: 0;
   }
   
-  .coverage-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .button-container {
+  .navigation-buttons {
     flex-direction: column;
     gap: 10px;
   }
   
-  .btn-secondary {
+  .back-button {
     order: 2;
   }
   
-  .btn-primary {
+  .next-button {
     order: 1;
   }
 }

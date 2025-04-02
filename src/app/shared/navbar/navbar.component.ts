@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [RouterModule, CommonModule],
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.css'] // Changed to CSS
 })
 export class NavbarComponent implements OnInit {
   isLoggedIn: boolean = false; // Simulating authentication state
@@ -28,6 +28,19 @@ export class NavbarComponent implements OnInit {
     if (savedLoginState) {
       this.isLoggedIn = JSON.parse(savedLoginState);
     }
+    
+    // Fix potential mobile view bug by ensuring correct view on large screens
+    this.checkScreenSize();
+    window.addEventListener('resize', () => this.checkScreenSize());
+  }
+  
+  private checkScreenSize(): void {
+    if (window.innerWidth >= 992) { // Bootstrap lg breakpoint
+      const navbarCollapse = document.getElementById('navbarNav');
+      if (navbarCollapse && navbarCollapse.classList.contains('collapse')) {
+        navbarCollapse.classList.add('show');
+      }
+    }
   }
 
   // Add scroll listener for navbar effects
@@ -35,16 +48,6 @@ export class NavbarComponent implements OnInit {
   onWindowScroll(): void {
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
     this.isScrolled = scrollPosition > 50;
-    
-    // Add class to navbar for scroll effect
-    const navbar = document.querySelector('.navbar');
-    if (navbar) {
-      if (this.isScrolled) {
-        navbar.classList.add('navbar-scrolled');
-      } else {
-        navbar.classList.remove('navbar-scrolled');
-      }
-    }
   }
 
   toggleAuth(): void {

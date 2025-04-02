@@ -1,0 +1,368 @@
+<!-- quote-calculation.component.html -->
+<div class="quote-calculator-container">
+    <!-- Header -->
+    <div class="calculator-header">
+      <h2>General Liability Quote Calculator</h2>
+      <p class="subtitle">Calculate your business insurance premium estimate</p>
+    </div>
+  
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+      <div class="progress-step" [class.active]="activeSection === 'coverages'" [class.complete]="isSectionComplete('coverages')">
+        <div class="step-circle">1</div>
+        <span class="step-label">Select Coverages</span>
+      </div>
+      <div class="progress-step" [class.active]="activeSection === 'business'" [class.complete]="isSectionComplete('business')">
+        <div class="step-circle">2</div>
+        <span class="step-label">Business Information</span>
+      </div>
+      <div class="progress-step" [class.active]="activeSection === 'factors'" [class.complete]="isSectionComplete('factors')">
+        <div class="step-circle">3</div>
+        <span class="step-label">Customize Factors</span>
+      </div>
+      <div class="progress-step" [class.active]="activeSection === 'results'" [class.complete]="showResults">
+        <div class="step-circle">4</div>
+        <span class="step-label">View Quote</span>
+      </div>
+    </div>
+  
+    <!-- Loading Indicator -->
+    <div *ngIf="loading" class="loading-indicator">
+      <div class="spinner"></div>
+      <p>Calculating your quote...</p>
+    </div>
+  
+    <!-- Main Content Area -->
+    <div class="calculator-content" [hidden]="loading">
+      
+      <!-- Step 1: Select Coverages -->
+      <div class="section coverage-section" *ngIf="activeSection === 'coverages'">
+        <h3>Select the coverages you need</h3>
+        <p class="section-description">Choose the coverages that align with your business needs. Select at least one coverage to proceed.</p>
+        
+        <div class="coverage-grid">
+          <div class="coverage-card" *ngFor="let coverage of coverages" [class.selected]="coverage.selected" (click)="toggleCoverage(coverage)">
+            <div class="coverage-header">
+              <h4>{{ coverage.name }}</h4>
+              <div class="selection-indicator">
+                <i class="checkmark" *ngIf="coverage.selected"></i>
+              </div>
+            </div>
+            <div class="coverage-body">
+              <p>{{ coverage.description }}</p>
+              <div class="base-premium">Base Premium: {{ formatCurrency(coverage.baseAmount) }}</div>
+            </div>
+            
+            <!-- Coverage Limits -->
+            <div class="coverage-limits" *ngIf="coverage.selected && coverage.limits">
+              <h5>Coverage Limits</h5>
+              <div class="limit-options">
+                <div 
+                  *ngFor="let limit of coverage.limits" 
+                  class="limit-option" 
+                  [class.selected]="coverage.selectedLimit === limit.id"
+                  (click)="setCoverageLimit(coverage, limit.id); $event.stopPropagation()">
+                  {{ limit.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Step 2: Business Information -->
+      <div class="section business-section" *ngIf="activeSection === 'business'">
+        <h3>Tell us about your business</h3>
+        <p class="section-description">Provide information about your business to help us calculate accurate premium estimates.</p>
+        
+        <form [formGroup]="businessInfoForm" class="business-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="industryCode">Industry Type</label>
+              <select id="industryCode" formControlName="industryCode" (change)="recalculateIfResultsShown()">
+                <option *ngFor="let industry of industries" [value]="industry.code">
+                  {{ industry.name }} (Risk: {{ industry.riskCategory | titlecase }})
+                </option>
+              </select>
+              <div class="error-message" *ngIf="businessInfoForm.get('industryCode')?.invalid && businessInfoForm.get('industryCode')?.touched">
+                Please select an industry
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="zipCode">ZIP Code</label>
+              <input type="text" id="zipCode" formControlName="zipCode" (blur)="recalculateIfResultsShown()">
+              <div class="error-message" *ngIf="businessInfoForm.get('zipCode')?.invalid && businessInfoForm.get('zipCode')?.touched">
+                Please enter a valid 5-digit ZIP code
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="annualRevenue">Annual Revenue</label>
+              <div class="input-prefix">
+                <span class="prefix">$</span>
+                <input type="number" id="annualRevenue" formControlName="annualRevenue" (blur)="recalculateIfResultsShown()">
+              </div>
+              <div class="error-message" *ngIf="businessInfoForm.get('annualRevenue')?.invalid && businessInfoForm.get('annualRevenue')?.touched">
+                Please enter a valid annual revenue
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="employeeCount">Number of Employees</label>
+              <input type="number" id="employeeCount" formControlName="employeeCount" (blur)="recalculateIfResultsShown()">
+              <div class="error-message" *ngIf="businessInfoForm.get('employeeCount')?.invalid && businessInfoForm.get('employeeCount')?.touched">
+                Please enter a valid number of employees
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="yearsInBusiness">Years in Business</label>
+              <input type="number" id="yearsInBusiness" formControlName="yearsInBusiness" (blur)="recalculateIfResultsShown()">
+              <div class="error-message" *ngIf="businessInfoForm.get('yearsInBusiness')?.invalid && businessInfoForm.get('yearsInBusiness')?.touched">
+                Please enter valid years in business
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="buildingType">Building Type</label>
+              <select id="buildingType" formControlName="buildingType" (change)="recalculateIfResultsShown()">
+                <option value="Commercial">Commercial</option>
+                <option value="Retail">Retail</option>
+                <option value="Industrial">Industrial</option>
+                <option value="Office">Office</option>
+                <option value="Mixed Use">Mixed Use</option>
+              </select>
+              <div class="error-message" *ngIf="businessInfoForm.get('buildingType')?.invalid && businessInfoForm.get('buildingType')?.touched">
+                Please select a building type
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="squareFootage">Square Footage</label>
+              <div class="input-suffix">
+                <input type="number" id="squareFootage" formControlName="squareFootage" (blur)="recalculateIfResultsShown()">
+                <span class="suffix">sq ft</span>
+              </div>
+              <div class="error-message" *ngIf="businessInfoForm.get('squareFootage')?.invalid && businessInfoForm.get('squareFootage')?.touched">
+                Please enter valid square footage
+              </div>
+            </div>
+            
+            <div class="form-group checkbox-group">
+              <label class="checkbox-container">
+                <input type="checkbox" formControlName="hasClaimHistory" (change)="recalculateIfResultsShown()">
+                <span class="checkbox-label">Has prior claims history?</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="form-row" *ngIf="businessInfoForm.get('hasClaimHistory')?.value">
+            <div class="form-group">
+              <label for="claimCount">Number of Claims (last 3 years)</label>
+              <input type="number" id="claimCount" formControlName="claimCount" (blur)="recalculateIfResultsShown()">
+            </div>
+            
+            <div class="form-group">
+              <label for="claimAmount">Total Claim Amount</label>
+              <div class="input-prefix">
+                <span class="prefix">$</span>
+                <input type="number" id="claimAmount" formControlName="claimAmount" (blur)="recalculateIfResultsShown()">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Step 3: Customize Factors -->
+      <div class="section factors-section" *ngIf="activeSection === 'factors'">
+        <h3>Customize Rating Factors</h3>
+        <p class="section-description">Adjust the rating factors to customize your premium calculation. These factors directly impact your premium costs.</p>
+        
+        <div class="factors-note">
+          <div class="note-icon">i</div>
+          <div class="note-content">
+            <p>The factors below are applicable to your selected coverages. Adjusting these values will affect your premium calculation.</p>
+          </div>
+        </div>
+        
+        <div class="factors-list">
+          <div class="factor-card" *ngFor="let factor of getApplicableFactors()">
+            <div class="factor-header">
+              <h4>{{ factor.name }}</h4>
+              <div class="factor-actions" *ngIf="isCustomValue(factor.id)">
+                <button class="reset-button" (click)="resetFactorToDefault(factor.id)">Reset to Default</button>
+              </div>
+            </div>
+            
+            <div class="factor-description">
+              <p>{{ factor.description }}</p>
+              
+              <!-- Show tier information for tier-based factors -->
+              <div class="tier-info" *ngIf="factor.type === 'tier_based'">
+                <small>{{ getTierDescription(factor.id) }}</small>
+              </div>
+            </div>
+            
+            <div class="factor-value" [class.custom-value]="isCustomValue(factor.id)">
+              Current Value: {{ getFactorDisplayValue(factor) }}
+            </div>
+            
+            <!-- Factor adjustment controls based on type -->
+            <div class="factor-controls" *ngIf="factor.type !== 'tier_based'">
+              <div class="slider-control" *ngIf="factor.minValue !== undefined && factor.maxValue !== undefined">
+                <input 
+                  type="range" 
+                  [min]="factor.minValue" 
+                  [max]="factor.maxValue" 
+                  [step]="factor.step || 1" 
+                  [value]="appliedFactors[factor.id] !== undefined ? appliedFactors[factor.id] : factor.value"
+                  (input)="updateFactorValue(factor.id, $any($event.target).value)"
+                >
+                <div class="range-labels">
+                  <span>{{ factor.minValue }}{{ factor.type === 'percentage' ? '%' : '' }}</span>
+                  <span>{{ factor.maxValue }}{{ factor.type === 'percentage' ? '%' : '' }}</span>
+                </div>
+              </div>
+              
+              <div class="numeric-control" *ngIf="factor.minValue !== undefined && factor.maxValue !== undefined">
+                <input 
+                  type="number" 
+                  [min]="factor.minValue" 
+                  [max]="factor.maxValue" 
+                  [step]="factor.step || 1" 
+                  [value]="appliedFactors[factor.id] !== undefined ? appliedFactors[factor.id] : factor.value"
+                  (change)="updateFactorValue(factor.id, $any($event.target).value)"
+                >
+                <span class="unit" *ngIf="factor.type === 'percentage'">%</span>
+                <span class="unit" *ngIf="factor.type === 'rate' || factor.type === 'fixed_amount'">$</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Step 4: Results -->
+      <div class="section results-section" *ngIf="activeSection === 'results' && calculationResult">
+        <h3>Your Quote Calculation</h3>
+        
+        <div class="result-summary">
+          <div class="total-premium">
+            <h4>Estimated Annual Premium</h4>
+            <div class="premium-amount">{{ formatCurrency(calculationResult.totalAnnualPremium) }}</div>
+            <div class="monthly-premium">{{ formatCurrency(calculationResult.monthlyPremium) }} per month</div>
+          </div>
+          
+          <div class="result-actions">
+            <button class="recalculate-button" (click)="calculatePremium()">Recalculate</button>
+            <button class="print-button" onclick="window.print()">Print Quote</button>
+          </div>
+        </div>
+        
+        <!-- Coverage Breakdown -->
+        <div class="coverage-breakdown">
+          <h4>Coverage Breakdown</h4>
+          
+          <div class="coverage-table">
+            <div class="table-header">
+              <div class="col coverage-name">Coverage</div>
+              <div class="col base-premium">Base Premium</div>
+              <div class="col adjustments">Adjustments</div>
+              <div class="col final-premium">Final Premium</div>
+            </div>
+            
+            <div class="table-row" *ngFor="let detail of calculationResult.coverageDetails">
+              <div class="col coverage-name">
+                {{ detail.coverageName }}
+                <div class="coverage-limit" *ngIf="detail.selectedLimit">
+                  Limit: {{ detail.selectedLimit.name }}
+                </div>
+              </div>
+              <div class="col base-premium">{{ formatCurrency(detail.basePremium) }}</div>
+              <div class="col adjustments">
+                <div class="adjustment-list">
+                  <div class="adjustment-item" *ngFor="let adj of detail.adjustments">
+                    <span class="adjustment-name">{{ adj.name }}:</span>
+                    <span class="adjustment-amount">{{ formatCurrency(adj.amount) }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col final-premium">{{ formatCurrency(detail.adjustedPremium) }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Premium Summary -->
+        <div class="premium-summary">
+          <h4>Premium Summary</h4>
+          
+          <div class="summary-table">
+            <div class="summary-row">
+              <div class="summary-label">Base Premium Total</div>
+              <div class="summary-value">{{ formatCurrency(calculationResult.basePremium) }}</div>
+            </div>
+            
+            <div class="summary-row" *ngFor="let adjustment of calculationResult.adjustments">
+              <div class="summary-label">{{ adjustment.name }}</div>
+              <div class="summary-value">{{ formatCurrency(adjustment.amount) }}</div>
+            </div>
+            
+            <div class="summary-row subtotal">
+              <div class="summary-label">Subtotal</div>
+              <div class="summary-value">{{ formatCurrency(calculationResult.subtotal) }}</div>
+            </div>
+            
+            <div class="summary-row" *ngFor="let fee of calculationResult.fees">
+              <div class="summary-label">{{ fee.name }}</div>
+              <div class="summary-value">{{ formatCurrency(fee.amount) }}</div>
+            </div>
+            
+            <div class="summary-row" *ngFor="let tax of calculationResult.taxes">
+              <div class="summary-label">{{ tax.name }} ({{ tax.rate }}%)</div>
+              <div class="summary-value">{{ formatCurrency(tax.amount) }}</div>
+            </div>
+            
+            <div class="summary-row total">
+              <div class="summary-label">Total Annual Premium</div>
+              <div class="summary-value">{{ formatCurrency(calculationResult.totalAnnualPremium) }}</div>
+            </div>
+            
+            <div class="summary-row monthly">
+              <div class="summary-label">Monthly Payment</div>
+              <div class="summary-value">{{ formatCurrency(calculationResult.monthlyPremium) }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Quote Disclaimer -->
+        <div class="quote-disclaimer">
+          <p>This premium calculation is an estimate based on the information provided. Actual premiums may vary based on additional underwriting factors. This is not a binding quote.</p>
+          <p>For a formal quote, please contact your insurance agent or broker.</p>
+        </div>
+      </div>
+      
+      <!-- Navigation Buttons -->
+      <div class="navigation-buttons">
+        <button 
+          class="back-button" 
+          *ngIf="activeSection !== 'coverages'" 
+          (click)="previousSection()">
+          Back
+        </button>
+        
+        <button 
+          class="next-button" 
+          [disabled]="activeSection === 'coverages' && !isSectionComplete('coverages') || 
+                     activeSection === 'business' && !isSectionComplete('business')"
+          (click)="nextSection()">
+          {{ activeSection === 'results' ? 'Start Over' : 'Next' }}
+        </button>
+      </div>
+    </div>
+  </div>

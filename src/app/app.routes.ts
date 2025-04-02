@@ -9,7 +9,7 @@ import { FinalPageComponent } from './final-page/final-page.component';
 import { CoverageDetailsComponent } from './coverage-details/coverage-details.component';
 import { HomeComponent } from './home/home.component';
 import { QuoteSummaryComponent } from './quote-summary/quote-summary.component';
-import { QuoteFinalComponent } from './quote-final/quote-final.component';
+import { QuoteCalculationComponent } from './quote-calculation/quote-calculation.component';
 
 
 
@@ -22,15 +22,8 @@ export const routes: Routes = [
   { path: 'final-page', component: FinalPageComponent },
   { path: 'coverage-details', component: CoverageDetailsComponent },
   { path: 'quote-summary', component: QuoteSummaryComponent },
-  { 
-    path: 'quote-final', 
-    loadComponent: () => import('./quote-final/quote-final.component').then(m => m.QuoteFinalComponent) 
-  },
-  { 
-    path: 'quotes/:id', 
-    loadComponent: () => import('./quote-final/quote-final.component').then(m => m.QuoteFinalComponent) 
-  },
   { path: 'home', component: HomeComponent },
+  { path: 'quote-calculation', component: QuoteCalculationComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/home' }
 ];

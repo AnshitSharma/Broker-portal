@@ -1,42 +1,50 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow sticky-top">
-  <div class="container">
+<nav class="navbar-glass" [class.navbar-glass-scrolled]="isScrolled">
+  <div class="navbar-glass-container container">
     <!-- Logo -->
-    <a class="navbar-brand d-flex align-items-center" routerLink="/home">
-      <img src="assets/logo.png" alt="Logo" class="logo me-2">
-      <span>BrokerPortal</span>
+    <a class="navbar-glass-brand d-flex align-items-center" routerLink="/home">
+      <img src="assets/logo.png" alt="Logo" class="navbar-glass-logo me-2">
+      <span class="navbar-glass-title">BrokerPortal</span>
     </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+    <button class="navbar-glass-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+      <span class="navbar-glass-toggler-icon"></span>
     </button>
 
     <!-- Navigation Links -->
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/home" routerLinkActive="active">
-            <i class="bi bi-house-door me-1"></i>Home
+    <div class="collapse navbar-collapse d-lg-flex" id="navbarNav">
+      <ul class="navbar-glass-nav navbar-nav me-auto">
+        <li class="navbar-glass-item nav-item">
+          <a class="navbar-glass-link" routerLink="/home" routerLinkActive="navbar-glass-link-active">
+            <i class="bi bi-house-door"></i>
+            <span class="navbar-glass-text">Home</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/quotes" routerLinkActive="active">
-            <i class="bi bi-list-check me-1"></i>Quotes
+        <li class="navbar-glass-item nav-item">
+          <a class="navbar-glass-link" routerLink="/quotes" routerLinkActive="navbar-glass-link-active">
+            <i class="bi bi-list-check"></i>
+            <span class="navbar-glass-text">Quotes</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/quote/new" routerLinkActive="active">
-            <i class="bi bi-plus-circle me-1"></i>New Quote
+        <li class="navbar-glass-item nav-item">
+          <a class="navbar-glass-link" routerLink="/quote/new" routerLinkActive="navbar-glass-link-active">
+            <i class="bi bi-plus-circle"></i>
+            <span class="navbar-glass-text">New Quote</span>
           </a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="insuranceDropdown" role="button"
-            data-bs-toggle="dropdown" aria-expanded="false" routerLinkActive="active" routerLink="/insurance">
-            <i class="bi bi-shield-check me-1"></i>Insurance
+        <li class="navbar-glass-item nav-item dropdown">
+          <a class="navbar-glass-link dropdown-toggle" href="#" id="insuranceDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false" routerLinkActive="navbar-glass-link-active" routerLink="/insurance">
+            <i class="bi bi-shield-check"></i>
+            <span class="navbar-glass-text">Insurance</span>
           </a>
-          <ul class="dropdown-menu" aria-labelledby="insuranceDropdown">
-            <li><a class="dropdown-item" routerLink="/insurance">Insurance Code</a></li>
-            <li><a class="dropdown-item" routerLink="/coverage-details">Coverage Details</a></li>
+          <ul class="navbar-glass-dropdown dropdown-menu" aria-labelledby="insuranceDropdown">
+            <li><a class="navbar-glass-dropdown-item dropdown-item" routerLink="/insurance">
+              <span class="navbar-glass-text">Insurance Quote</span>
+            </a></li>
+            <li><a class="navbar-glass-dropdown-item dropdown-item" routerLink="/coverage-details">
+              <span class="navbar-glass-text">Coverage Details</span>
+            </a></li>
           </ul>
         </li>
       </ul>
@@ -45,42 +53,44 @@
       <div class="d-flex align-items-center">
         <!-- Search form - small screens hidden, visible on larger screens -->
         <form class="d-none d-lg-flex me-3">
-          <div class="input-group">
-            <input type="search" class="form-control" placeholder="Search quotes..." aria-label="Search">
-            <button class="btn btn-light" type="submit">
+          <div class="navbar-glass-input-group input-group">
+            <input type="search" class="navbar-glass-search form-control" placeholder="Search quotes..." aria-label="Search">
+            <button class="navbar-glass-search-btn btn" type="submit">
               <i class="bi bi-search"></i>
             </button>
           </div>
         </form>
 
-        <div class="dropdown">
-          <button class="btn btn-light dropdown-toggle d-flex align-items-center" type="button" id="userMenu" 
+        <div class="navbar-glass-user-dropdown dropdown">
+          <button class="navbar-glass-user-btn dropdown-toggle d-flex align-items-center" type="button" id="userMenu" 
             data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person-circle me-2"></i>
-            <span>{{ isLoggedIn ? 'John Broker' : 'Guest' }}</span>
+            <i class="bi bi-person-circle"></i>
+            <span class="navbar-glass-text">{{ isLoggedIn ? 'John Broker' : 'Guest' }}</span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
+          <ul class="navbar-glass-dropdown dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
             <li *ngIf="isLoggedIn" class="dropdown-item-text">
               <div class="d-flex align-items-center p-2">
                 <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" 
                   style="width: 40px; height: 40px;">JB</div>
                 <div>
-                  <div class="fw-bold">John Broker</div>
-                  <div class="small text-muted">john.broker.com</div>
+                  <div class="navbar-glass-text fw-bold">John Broker</div>
+                  <div class="navbar-glass-text small text-muted">john.brokerexample.com</div>
                 </div>
               </div>
             </li>
             <li *ngIf="isLoggedIn"><hr class="dropdown-divider"></li>
-            <li *ngIf="isLoggedIn"><a class="dropdown-item" routerLink="/profile">
-              <i class="bi bi-person me-2"></i>My Profile
+            <li *ngIf="isLoggedIn"><a class="navbar-glass-dropdown-item dropdown-item" routerLink="/profile">
+              <i class="bi bi-person"></i>
+              <span class="navbar-glass-text">My Profile</span>
             </a></li>
-            <li *ngIf="isLoggedIn"><a class="dropdown-item" href="#">
-              <i class="bi bi-gear me-2"></i>Settings
+            <li *ngIf="isLoggedIn"><a class="navbar-glass-dropdown-item dropdown-item" href="#">
+              <i class="bi bi-gear"></i>
+              <span class="navbar-glass-text">Settings</span>
             </a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#" (click)="toggleAuth()">
+            <li><a class="navbar-glass-dropdown-item dropdown-item" href="#" (click)="toggleAuth()">
               <i class="bi" [ngClass]="isLoggedIn ? 'bi-box-arrow-right' : 'bi-box-arrow-in-right'"></i>
-              <span class="ms-2">{{ isLoggedIn ? 'Logout' : 'Login' }}</span>
+              <span class="navbar-glass-text">{{ isLoggedIn ? 'Logout' : 'Login' }}</span>
             </a></li>
           </ul>
         </div>
